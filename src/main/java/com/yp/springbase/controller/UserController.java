@@ -1,7 +1,7 @@
 package com.yp.springbase.controller;
 
-import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.yp.springbase.dto.BaseRespDTO;
+import com.yp.springbase.base.framework.PageRespDTO;
+import com.yp.springbase.base.framework.ResponseResult;
 import com.yp.springbase.dto.req.UserQueryDTO;
 import com.yp.springbase.dto.res.UserRespDTO;
 import com.yp.springbase.entity.User;
@@ -25,14 +25,19 @@ public class UserController {
     }
 
     @PostMapping("/list")
-    public BaseRespDTO<List<UserRespDTO>> list(@RequestBody UserQueryDTO userQueryDTO) {
+    public PageRespDTO<List<UserRespDTO>> list(@RequestBody UserQueryDTO userQueryDTO) {
         log.info("哈哈哈哈哈");
         return userService.list(userQueryDTO);
     }
 
     @GetMapping("/hi")
-    public String hi() {
-        return "Hi";
+    public ResponseResult<String> hi() {
+        return ResponseResult.success("你好");
+    }
+
+    @GetMapping("/hello")
+    public String hello() {
+        return "Hello World";
     }
 
 }

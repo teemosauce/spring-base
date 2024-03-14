@@ -1,21 +1,16 @@
 package com.yp.springbase.entity;
 
 import com.baomidou.mybatisplus.annotation.TableName;
+import com.yp.springbase.base.framework.BaseEntity;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
 
-import java.io.Serializable;
-import java.util.Date;
 
-
+@EqualsAndHashCode(callSuper = true)
+@Data
 @TableName("user")
 public class User extends BaseEntity {
 
     private String name;
 
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
 }

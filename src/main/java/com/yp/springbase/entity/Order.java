@@ -1,6 +1,6 @@
 package com.yp.springbase.entity;
 
-import java.util.Date;
+import com.yp.springbase.base.framework.BaseEntity;
 
 public class Order extends BaseEntity {
 
