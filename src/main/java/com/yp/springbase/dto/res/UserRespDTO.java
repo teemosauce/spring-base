@@ -1,28 +1,18 @@
 package com.yp.springbase.dto.res;
 
+import lombok.Data;
+
 import java.util.Date;
 
+@Data
 public class UserRespDTO  {
 
     private int id;
 
     private String name;
 
+    private Date createTime;
 
-    public int getId() {
-        return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
+    private Date updateTime;
 
 }

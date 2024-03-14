@@ -19,9 +19,14 @@ public class UserController {
     @Autowired
     private UserService userService;
 
-    @PostMapping()
+    @PostMapping
     public int create(@RequestBody User user) {
         return userService.create(user);
+    }
+
+    @PutMapping
+    public int update(@RequestBody User user) throws InterruptedException {
+        return userService.update(user);
     }
 
     @PostMapping("/list")

@@ -10,6 +10,7 @@ import java.util.List;
 public interface UserService {
     int create(User user);
 
+    int update(User user) throws InterruptedException;
 
     PageRespDTO<List<UserRespDTO>> list(UserQueryDTO userQueryDTO);
 }

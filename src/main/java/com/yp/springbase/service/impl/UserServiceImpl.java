@@ -1,5 +1,6 @@
 package com.yp.springbase.service.impl;
 
+import com.alibaba.fastjson.JSON;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
@@ -9,13 +10,19 @@ import com.yp.springbase.base.framework.BaseQueryDTO;
 import com.yp.springbase.base.framework.PageRespDTO;
 import com.yp.springbase.dto.req.UserQueryDTO;
 import com.yp.springbase.dto.res.UserRespDTO;
+import com.yp.springbase.entity.Log;
+import com.yp.springbase.mapper.LogMapper;
 import com.yp.springbase.mapper.UserMapper;
 import com.yp.springbase.entity.User;
+import com.yp.springbase.service.LogService;
 import com.yp.springbase.service.UserService;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
+import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -24,10 +31,34 @@ import java.util.stream.Collectors;
 @Slf4j
 public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements UserService {
 
+
+    @Autowired
+    private LogService logService;
+
+    @Autowired
+    private LogMapper logMapper;
+
     @Override
+    @Transactional
     public int create(User user) {
-        return this.getBaseMapper().insert(user);
+       int row  = this.getBaseMapper().insert(user);
+        Log log = new Log() {{
+            setMessage("插入了一条数据" + JSON.toJSONString(user));
+            setCreateTime(new Date());
+            setId(1284526082);
+        }};
+        this.logMapper.insert(log);
+        return row;
     }
+
+
+    @Transactional
+    @Override
+    public int update(User user) throws InterruptedException {
+       int row = getBaseMapper().updateById(user);
+       return row;
+    }
+
 
     @Override
     public PageRespDTO<List<UserRespDTO>> list(UserQueryDTO userQueryDTO) {
@@ -49,6 +80,8 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
         List<UserRespDTO> userRespList =  users.getRecords().stream().map(u -> new UserRespDTO(){{
             setId(u.getId());
             setName(u.getName());
+            setCreateTime(u.getCreateTime());
+            setUpdateTime(u.getUpdateTime());
         }}).collect(Collectors.toList());
 
         return PageRespDTO.make(userRespList, users);
