@@ -1,0 +1,15 @@
+spring:
+  application:
+    name: SpringBase
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    username: root
+    password: nihao123
+    url: jdbc:mysql://172.16.52.99:3306/yp?useUnicode=true&characterEncoding=UTF-8&autoReconnect=true&useSSL=false&zeroDateTimeBehavior=convertToNull&serverTimezone=Asia/Shanghai&rewriteBatchedStatements=true&allowMultiQueries=true
+
+#mybatis-plus:
+#  configuration:
+#    log-impl: org.apache.ibatis.logging.slf4j.Slf4jImpl
+
+logging:
+  config:

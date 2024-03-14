@@ -1,9 +1,13 @@
-package com.yp.springbase.model;
+package com.yp.springbase.dto.res;
 
-public class User {
+import java.util.Date;
+
+public class UserRespDTO  {
+
     private int id;
 
     private String name;
+
 
     public int getId() {
         return id;
@@ -21,11 +25,4 @@ public class User {
         this.name = name;
     }
 
-    @Override
-    public String toString() {
-        return "User{" +
-                "id=" + id +
-                ", name='" + name + '\'' +
-                '}';
-    }
 }
