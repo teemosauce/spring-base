@@ -25,8 +25,13 @@ public class UserController {
     }
 
     @PutMapping
-    public int update(@RequestBody User user) throws InterruptedException {
+    public Boolean update(@RequestBody User user) {
         return userService.update(user);
+    }
+
+    @PostMapping("/updateById")
+    public Boolean updateById(@RequestBody User user) {
+        return userService.updateById(user);
     }
 
     @PostMapping("/list")

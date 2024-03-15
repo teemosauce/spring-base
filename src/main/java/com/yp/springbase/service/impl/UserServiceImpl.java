@@ -18,9 +18,12 @@ import com.yp.springbase.service.LogService;
 import com.yp.springbase.service.UserService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.web.ServerProperties;
+import org.springframework.http.*;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
+import org.springframework.web.client.RestTemplate;
 
 import java.util.Date;
 import java.util.List;
@@ -31,6 +34,12 @@ import java.util.stream.Collectors;
 @Slf4j
 public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements UserService {
 
+
+    @Autowired
+    private ServerProperties properties;
+
+    @Autowired
+    private RestTemplate restTemplate;
 
     @Autowired
     private LogService logService;
@@ -54,14 +63,45 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
 
     @Transactional
     @Override
-    public int update(User user) throws InterruptedException {
-       int row = getBaseMapper().updateById(user);
-       return row;
-    }
+    public boolean update(User user) {
 
+        // 有事务 并且数据修改成功
+        boolean success = this.updateById(user);
+
+
+        // 在本服务中查询刚修改的数据是可以查到的
+        PageRespDTO<List<UserRespDTO>> userPageRespDTO =  this.list(new UserQueryDTO() {{
+            setName(user.getName());
+        }});
+
+        log.info("本服务查询的数据：" + userPageRespDTO.getRecords().get(0));
+
+        log.info("数据修改完整：" + success);
+        if (properties.getPort() == 8081) {
+            User updateUser = new User(){{
+                setId(user.getId());
+                setName(user.getName());
+            }};
+
+            // 去跨服务查 数据还是查不出来的 因为事务还未提交
+            HttpHeaders headers = new HttpHeaders();
+            headers.add("Content-Type", "application/json");
+            HttpEntity<String> requestEntity = new HttpEntity<>(JSON.toJSONString(updateUser), headers);
+//            ResponseEntity<String> res = restTemplate.exchange("http://localhost:8080/user", HttpMethod.PUT, requestEntity, String.class);
+//            ResponseEntity<String> res = restTemplate.exchange("http://localhost:8080/user/updateById", HttpMethod.POST, requestEntity, String.class);
+
+            ResponseEntity<String> res = restTemplate.exchange("http://localhost:8080/user/list", HttpMethod.POST, requestEntity, String.class);
+
+            log.info(res.getStatusCode().toString());
+            log.info(res.getHeaders().toString());
+            log.info("跨服务查询出来的数据：" + res.getBody());
+        }
+       return success;
+    }
 
     @Override
     public PageRespDTO<List<UserRespDTO>> list(UserQueryDTO userQueryDTO) {
+
         LambdaQueryWrapper<User> queryWrapper = Wrappers.lambdaQuery();
         queryWrapper.eq(StringUtils.hasLength(userQueryDTO.getName()), User::getName, userQueryDTO.getName());
 
