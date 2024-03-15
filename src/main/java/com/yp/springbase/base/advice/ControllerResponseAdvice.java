@@ -26,10 +26,11 @@ public class ControllerResponseAdvice implements ResponseBodyAdvice<Object> {
     public Object beforeBodyWrite(Object body, MethodParameter returnType, MediaType selectedContentType, Class selectedConverterType, ServerHttpRequest request, ServerHttpResponse response) {
         log.info("统一包装前返回的数据" + body);
         ResponseResult<Object> result = ResponseResult.success(body);
-        log.info("统一包装后返回的数据" + JSON.toJSONString(result));
 
+
+        log.info("统一包装后返回的数据" + JSON.toJSONString(result));
         if (!returnType.getGenericParameterType().equals(String.class)) {
-           return result;
+           return JSON.parse(JSON.toJSONString(result));
         }
         ObjectMapper objectMapper = new ObjectMapper();
         try {
