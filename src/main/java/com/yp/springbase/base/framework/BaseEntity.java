@@ -12,8 +12,8 @@ import java.util.Date;
 @Data
 public class BaseEntity implements Serializable {
 
-//    @TableId
-    private Integer id;
+    @TableId(type = IdType.ASSIGN_ID)
+    private Long id;
 
     @TableField(fill = FieldFill.INSERT)
     private Date createTime;
@@ -21,12 +21,4 @@ public class BaseEntity implements Serializable {
     @TableField(fill = FieldFill.INSERT_UPDATE, update = "now()")
     private Date updateTime;
 
-    @Override
-    public String toString() {
-        return "BaseEntity{" +
-                "id=" + id +
-                ", createTime=" + createTime +
-                ", updateTime=" + updateTime +
-                '}';
-    }
 }

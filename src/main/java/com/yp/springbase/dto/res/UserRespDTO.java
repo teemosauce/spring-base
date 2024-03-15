@@ -7,7 +7,7 @@ import java.util.Date;
 @Data
 public class UserRespDTO  {
 
-    private int id;
+    private long id;
 
     private String name;
 

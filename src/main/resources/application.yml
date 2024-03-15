@@ -7,9 +7,9 @@ spring:
     name: SpringBase
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    username: root
-    password: gas654321/*-
-    url: jdbc:mysql://124.221.54.148:3306/pandora?useUnicode=true&characterEncoding=UTF-8&autoReconnect=true&useSSL=false&zeroDateTimeBehavior=convertToNull&serverTimezone=Asia/Shanghai&rewriteBatchedStatements=true&allowMultiQueries=true
+    username: myuser
+    password: 123456
+    url: jdbc:mysql://localhost:3306/pandora?useUnicode=true&characterEncoding=UTF-8&autoReconnect=true&useSSL=false&zeroDateTimeBehavior=convertToNull&serverTimezone=Asia/Shanghai&rewriteBatchedStatements=true&allowMultiQueries=true
 
 
 mybatis-plus:

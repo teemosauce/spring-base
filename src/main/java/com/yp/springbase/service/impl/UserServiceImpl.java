@@ -4,7 +4,6 @@ import com.alibaba.fastjson.JSON;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
-import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.yp.springbase.base.framework.BaseQueryDTO;
 import com.yp.springbase.base.framework.PageRespDTO;
@@ -50,11 +49,15 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
     @Override
     @Transactional
     public int create(User user) {
-       int row  = this.getBaseMapper().insert(user);
+
+
+
+
+        int row  = this.getBaseMapper().insert(user);
         Log log = new Log() {{
             setMessage("插入了一条数据" + JSON.toJSONString(user));
             setCreateTime(new Date());
-            setId(1284526082);
+//            setId(1284526082);
         }};
         this.logMapper.insert(log);
         return row;
@@ -73,28 +76,43 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
         PageRespDTO<List<UserRespDTO>> userPageRespDTO =  this.list(new UserQueryDTO() {{
             setName(user.getName());
         }});
-
         log.info("本服务查询的数据：" + userPageRespDTO.getRecords().get(0));
 
         log.info("数据修改完整：" + success);
         if (properties.getPort() == 8081) {
-            User updateUser = new User(){{
-                setId(user.getId());
-                setName(user.getName());
-            }};
 
-            // 去跨服务查 数据还是查不出来的 因为事务还未提交
-            HttpHeaders headers = new HttpHeaders();
-            headers.add("Content-Type", "application/json");
-            HttpEntity<String> requestEntity = new HttpEntity<>(JSON.toJSONString(updateUser), headers);
+
+            new Thread(() -> {
+                log.info(Thread.currentThread().getName() + "开始运行");
+                User updateUser = new User(){{
+                    setId(user.getId());
+                    setName(user.getName());
+//                setId(-1501503486); // 修改别的用户
+//                setName("汪小姐");
+
+                }};
+
+                // 去跨服务查 数据还是查不出来的 因为事务还未提交
+                HttpHeaders headers = new HttpHeaders();
+                headers.add("Content-Type", "application/json");
+                HttpEntity<String> requestEntity = new HttpEntity<>(JSON.toJSONString(updateUser), headers);
 //            ResponseEntity<String> res = restTemplate.exchange("http://localhost:8080/user", HttpMethod.PUT, requestEntity, String.class);
-//            ResponseEntity<String> res = restTemplate.exchange("http://localhost:8080/user/updateById", HttpMethod.POST, requestEntity, String.class);
+                ResponseEntity<String> res = restTemplate.exchange("http://localhost:8080/user/updateById", HttpMethod.POST, requestEntity, String.class);
 
-            ResponseEntity<String> res = restTemplate.exchange("http://localhost:8080/user/list", HttpMethod.POST, requestEntity, String.class);
+//            ResponseEntity<String> res = restTemplate.exchange("http://localhost:8080/user/list", HttpMethod.POST, requestEntity, String.class);
 
-            log.info(res.getStatusCode().toString());
-            log.info(res.getHeaders().toString());
-            log.info("跨服务查询出来的数据：" + res.getBody());
+                log.info(res.getStatusCode().toString());
+                log.info(res.getHeaders().toString());
+                log.info("跨服务查询出来的数据：" + res.getBody());
+            }).start();
+
+            try {
+                Thread.sleep(3000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+
+            log.info("返回结果吗");
         }
        return success;
     }
@@ -110,8 +128,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
         log.info(String.valueOf(page.getSize()));
         log.info(String.valueOf(page.getCurrent()));
 
-        Page<User> page2 = new Page<>(userQueryDTO.getPageNumber(), userQueryDTO.getPageSize());
-        IPage<User> users = this.getBaseMapper().selectPage(page2, queryWrapper);
+        IPage<User> users = this.getBaseMapper().selectPage(page, queryWrapper);
 
         log.info(String.valueOf(users.getCurrent()));
         log.info(String.valueOf(users.getTotal()));
