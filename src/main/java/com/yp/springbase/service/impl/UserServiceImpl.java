@@ -50,9 +50,6 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
     @Transactional
     public int create(User user) {
 
-
-
-
         int row  = this.getBaseMapper().insert(user);
         Log log = new Log() {{
             setMessage("插入了一条数据" + JSON.toJSONString(user));
@@ -122,6 +119,8 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
 
         LambdaQueryWrapper<User> queryWrapper = Wrappers.lambdaQuery();
         queryWrapper.eq(StringUtils.hasLength(userQueryDTO.getName()), User::getName, userQueryDTO.getName());
+
+        queryWrapper.select(User.class, field -> field.getProperty().equals("updateTime"));
 
         IPage<User> page = BaseQueryDTO.page(userQueryDTO);
 

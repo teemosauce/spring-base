@@ -1,5 +1,5 @@
 server:
-  port: 8081
+  port: 8080
 
 
 spring:
@@ -7,9 +7,23 @@ spring:
     name: SpringBase
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    username: myuser
-    password: 123456
-    url: jdbc:mysql://localhost:3306/pandora?useUnicode=true&characterEncoding=UTF-8&autoReconnect=true&useSSL=false&zeroDateTimeBehavior=convertToNull&serverTimezone=Asia/Shanghai&rewriteBatchedStatements=true&allowMultiQueries=true
+#    username: myuser
+#    password: 123456
+#    url: jdbc:mysql://localhost:3306/pandora?useUnicode=true&characterEncoding=UTF-8&autoReconnect=true&useSSL=false&zeroDateTimeBehavior=convertToNull&serverTimezone=Asia/Shanghai&rewriteBatchedStatements=true&allowMultiQueries=true
+    type: com.alibaba.druid.pool.DruidDataSource
+
+    druid:
+      master:
+        url: jdbc:mysql://localhost:3306/pandora?useUnicode=true&characterEncoding=UTF-8&autoReconnect=true&useSSL=false&zeroDateTimeBehavior=convertToNull&serverTimezone=Asia/Shanghai&rewriteBatchedStatements=true&allowMultiQueries=true
+        username: root
+        password: gas654321/*-
+      slave:
+        enabled: false
+      initialSize: 5
+
+#    type: com.zaxxer.hikari.HikariDataSource
+#    hikari:
+#      connection-timeout:
 
 
 mybatis-plus:
